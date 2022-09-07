@@ -1,2 +1,3 @@
 ubuntu-install.patch
 ubuntu-remove-pacman.patch
+ubuntu-fix-grub-probe.patch
