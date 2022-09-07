@@ -1,0 +1,46 @@
+Description: Only install what we need for now
+Author: Tobias Heider <me@tobhe.de>
+Last-Update: 2022-09-07
+
+Index: asahi-scripts-20220821/Makefile
+===================================================================
+--- asahi-scripts-20220821.orig/Makefile
++++ asahi-scripts-20220821/Makefile
+@@ -1,31 +1,16 @@
+-PREFIX=/usr/local
++PREFIX=/usr
+ 
+-SCRIPTS=update-vendor-firmware update-grub first-boot update-m1n1
+-UNITS=first-boot.service update-vendor-firmware.service systemd-udev-trigger-early.service
+-MULTI_USER_WANTS=first-boot.service
+-SYSINIT_WANTS=update-vendor-firmware.service systemd-udev-trigger-early.service
++SCRIPTS=update-grub first-boot
++UNITS=first-boot.service
+ 
+ install:
+ 	install -d $(DESTDIR)$(PREFIX)/bin/
+ 	install -m0755 -t $(DESTDIR)$(PREFIX)/bin/ $(SCRIPTS)
+-	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
+-	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
+-	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
+-	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
+-		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
+-	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(SYSINIT_WANTS)) \
+-		$(DESTDIR)$(PREFIX)/lib/systemd/system/sysinit.target.wants/
+-	install -dD $(DESTDIR)$(PREFIX)/lib/initcpio/install
+-	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/initcpio/install initcpio/install/asahi
+-	install -dD $(DESTDIR)$(PREFIX)/share/libalpm/hooks
+-	install -m0644 -t $(DESTDIR)$(PREFIX)/share/libalpm/hooks libalpm/hooks/95-m1n1-install.hook
++	install -dD $(DESTDIR)/lib/systemd/system
++	install -m0644 -t $(DESTDIR)/lib/systemd/system $(addprefix systemd/,$(UNITS))
+ 
+ uninstall:
+ 	rm -f $(addprefix $(DESTDIR)$(PREFIX)/bin/,$(SCRIPTS))
+-	rm -f $(addprefix $(DESTDIR)$(PREFIX)/lib/systemd/system/,$(UNITS))
+-	rm -f $(addprefix $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/,$(MULTI_USER_WANTS))
+-	rm -f $(addprefix $(DESTDIR)$(PREFIX)/lib/systemd/system/sysinit.target.wants/,$(SYSINIT_WANTS))
+-	rm -f $(DESTDIR)$(PREFIX)/lib/initcpio/install/asahi
+-	rm -f $(DESTDIR)$(PREFIX)/share/libalpm/hooks/95-m1n1-install.hook
++	rm -f $(addprefix $(DESTDIR)/lib/systemd/system/,$(UNITS))
+ 
+ .PHONY: install uninstall
