@@ -1,0 +1,18 @@
+Description: Remove Arch Linux specific commands
+Author: Tobias Heider <me@tobhe.de>
+Last-Update: 2022-09-07
+
+Index: asahi-scripts-20220821/first-boot
+===================================================================
+--- asahi-scripts-20220821.orig/first-boot
++++ asahi-scripts-20220821/first-boot
+@@ -39,9 +39,3 @@ EOF
+ fi
+ 
+ update-grub
+-
+-echo
+-echo "Initializing Pacman keyring..."
+-pacman-key --init
+-pacman-key --populate archlinuxarm asahilinux
+-echo

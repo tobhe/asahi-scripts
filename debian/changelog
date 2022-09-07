@@ -1,0 +1,24 @@
+asahi-scripts (20220821-3) jammy; urgency=medium
+
+  * Add symlink for /usr/sbin/update-grub for scripts using the absolute
+    path
+
+ -- Tobias Heider <tobias.heider@canonical.com>  Wed, 07 Sep 2022 18:11:04 +0200
+
+asahi-scripts (20220821-2) jammy; urgency=medium
+
+  * Add dpkg-divert for update-grub from grub2-common
+
+ -- Tobias Heider <me@tobhe.de>  Wed, 07 Sep 2022 17:29:54 +0200
+
+asahi-scripts (20220821-1) jammy; urgency=medium
+
+  * Add update-grub
+
+ -- Tobias Heider <me@tobhe.de>  Wed, 07 Sep 2022 16:40:26 +0200
+
+asahi-scripts (20220821) jammy; urgency=medium
+
+  * Initial release 
+
+ -- Tobias Heider <me@tobhe.de>  Wed, 07 Sep 2022 14:18:38 +0200

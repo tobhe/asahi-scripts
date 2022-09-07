@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+dpkg-divert --remove /usr/sbin/update-grub
+
+#DEBHELPER#
+
+exit 0
