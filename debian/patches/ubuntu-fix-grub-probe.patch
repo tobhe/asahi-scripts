@@ -1,0 +1,20 @@
+Index: asahi-scripts/first-boot
+===================================================================
+--- asahi-scripts.orig/first-boot
++++ asahi-scripts/first-boot
+@@ -5,6 +5,7 @@ set -e
+ 
+ root_dev=$(findmnt -n -o SOURCE /)
+ efi_dev=$(findmnt -n -o SOURCE /boot/efi)
++root_uuid_old=$(findmnt -n -o UUID /)
+ 
+ if [ -e "$root_dev" ]; then
+     echo "Randomizing root filesystem UUID..."
+@@ -38,4 +39,7 @@ EOF
+     echo
+ fi
+ 
++# XXX: grub-probe will look for the old UUID, this will keep it happy
++ln -s "/dev/disk/by-uuid/$root_uuid" "/dev/disk/by-uuid/$root_uuid_old"
++
+ update-grub
