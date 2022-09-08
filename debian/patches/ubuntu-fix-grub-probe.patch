@@ -15,6 +15,6 @@ Index: asahi-scripts/first-boot
  fi
  
 +# XXX: grub-probe will look for the old UUID, this will keep it happy
-+ln -s "/dev/disk/by-uuid/$root_uuid" "/dev/disk/by-uuid/$root_uuid_old"
++ln -s "/dev/disk/by-uuid/$(echo "$root_uuid" | cut -d "=" -f2)" "/dev/disk/by-uuid/$root_uuid_old"
 +
  update-grub
