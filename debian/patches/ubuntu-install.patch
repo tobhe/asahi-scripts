@@ -47,3 +47,16 @@ Index: asahi-scripts/Makefile
 +	rm -f $(addprefix $(DESTDIR)/lib/systemd/system/,$(UNITS))
  
  .PHONY: install uninstall
+Index: asahi-scripts/systemd/first-boot.service
+===================================================================
+--- asahi-scripts.orig/systemd/first-boot.service
++++ asahi-scripts/systemd/first-boot.service
+@@ -10,7 +10,7 @@ ConditionFirstBoot=yes
+ [Service]
+ Type=oneshot
+ RemainAfterExit=yes
+-ExecStart=/usr/bin/first-boot
++ExecStart=/usr/sbin/first-boot
+ 
+ [Install]
+ WantedBy=multi-user.target
