@@ -2,10 +2,10 @@ Description: Only install what we need for now
 Author: Tobias Heider <me@tobhe.de>
 Last-Update: 2022-09-07
 
-Index: asahi-scripts-20220821/Makefile
+Index: asahi-scripts/Makefile
 ===================================================================
---- asahi-scripts-20220821.orig/Makefile
-+++ asahi-scripts-20220821/Makefile
+--- asahi-scripts.orig/Makefile
++++ asahi-scripts/Makefile
 @@ -1,31 +1,16 @@
 -PREFIX=/usr/local
 +PREFIX=/usr
@@ -15,7 +15,7 @@ Index: asahi-scripts-20220821/Makefile
 -MULTI_USER_WANTS=first-boot.service
 -SYSINIT_WANTS=update-vendor-firmware.service systemd-udev-trigger-early.service
 +SCRIPTS=update-grub first-boot
-+UNITS=first-boot.service
++UNITS=first-boot.service systemd-udev-trigger-early.service
  
  install:
  	install -d $(DESTDIR)$(PREFIX)/bin/
