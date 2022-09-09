@@ -2,7 +2,9 @@
 
 set -e
 
-dpkg-divert --remove /usr/sbin/update-grub
+if [ remove = "$1" -o abort-install = "$1" -o disappear = "$1" ]; then
+	dpkg-divert --package asahi-scripts --rename --remove /usr/sbin/update-grub
+fi
 
 #DEBHELPER#
 

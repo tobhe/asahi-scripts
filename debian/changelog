@@ -1,3 +1,10 @@
+asahi-scripts (20220821-8) jammy; urgency=medium
+
+  * Fix divert conflict. This seems to not work well with symlinks
+    so simply install to sbin.
+
+ -- Tobias Heider <me@tobhe.de>  Fri, 09 Sep 2022 22:06:28 +0000
+
 asahi-scripts (20220821-7) jammy; urgency=medium
 
   * d/p/ubuntu-install.patch: Install early udev systemd unit
