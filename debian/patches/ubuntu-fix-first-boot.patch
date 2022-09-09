@@ -10,10 +10,16 @@ Index: asahi-scripts/first-boot
  
  if [ -e "$root_dev" ]; then
      echo "Randomizing root filesystem UUID..."
-@@ -38,4 +39,7 @@ EOF
+@@ -38,4 +39,13 @@ EOF
      echo
  fi
  
++# Ubuntu doesn't ship systemd-firstboot(1), improvise
++systemd-machine-id-setup
++
++# XXX: needed to make sure dev file exists
++sleep 1
++
 +# XXX: grub-probe will look for the old UUID, this will keep it happy
 +ln -s "/dev/disk/by-uuid/$(echo "$root_uuid" | cut -d "=" -f2)" "/dev/disk/by-uuid/$root_uuid_old"
 +

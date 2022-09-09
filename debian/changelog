@@ -1,11 +1,13 @@
-asahi-scripts (20220821-5) jammy; urgency=medium
+asahi-scripts (20220821-6) jammy; urgency=medium
 
-  * d/p/ubuntu-fix-grub-probe.patch: Fix bug with update-grub on
-    first boot. grub-probe for some reason looks for a device matching
-    the old UUID, /dev/disk/* already lists the new ones so trick grub
-    by linking new->old
+  * d/p/ubuntu-fix-first-boot.patch:
+    - Fix bug with update-grub on first boot. grub-probe for some reason
+      looks for a device matching the old UUID, /dev/disk/* already lists
+      the new ones so trick grub by linking new->old
+    - Ubuntu won't auto-generate /etc/machine-id if it is missing, so do
+      it here.
 
- -- Tobias Heider <tobias.heider@canonical.com>  Thu, 08 Sep 2022 01:22:40 +0200
+ -- Tobias Heider <tobias.heider@canonical.com>  Thu, 08 Sep 2022 15:21:03 +0200
 
 asahi-scripts (20220821-3) jammy; urgency=medium
 
