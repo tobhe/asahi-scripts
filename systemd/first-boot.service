@@ -10,7 +10,7 @@ ConditionFirstBoot=yes
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/sbin/first-boot
+ExecStart=/usr/bin/first-boot
 
 [Install]
 WantedBy=multi-user.target
