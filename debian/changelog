@@ -1,3 +1,9 @@
+asahi-scripts (20220821-10) jammy; urgency=medium
+
+  * Install update-vendor-firmware and systemd service
+
+ -- Tobias Heider <me@tobhe.de>  Sat, 10 Sep 2022 23:51:00 +0200
+
 asahi-scripts (20220821-9) jammy; urgency=medium
 
   * Fix d/control copy-paste errors
