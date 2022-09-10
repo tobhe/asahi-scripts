@@ -1,3 +1,9 @@
+asahi-scripts (20220821-9) jammy; urgency=medium
+
+  * Fix d/control copy-paste errors
+
+ -- Tobias Heider <me@tobhe.de>  Sat, 10 Sep 2022 21:29:38 +0200
+
 asahi-scripts (20220821-8) jammy; urgency=medium
 
   * Fix divert conflict. This seems to not work well with symlinks
