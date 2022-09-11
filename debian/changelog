@@ -1,3 +1,11 @@
+asahi-scripts (20220821-11) jammy; urgency=medium
+
+  * Install systemd want targets
+  * d/p/ubuntu-fix-update-vendor-firmware: Fix wrong shebang bug
+    in update-vendor-firmware.
+
+ -- Tobias Heider <me@tobhe.de>  Sat, 10 Sep 2022 22:09:50 +0000
+
 asahi-scripts (20220821-10) jammy; urgency=medium
 
   * Install update-vendor-firmware and systemd service
@@ -32,7 +40,7 @@ asahi-scripts (20220821-6) jammy; urgency=medium
     - Ubuntu won't auto-generate /etc/machine-id if it is missing, so do
       it here.
 
- -- Tobias Heider <me@tobhe.de> Thu, 08 Sep 2022 15:21:03 +0200
+ -- Tobias Heider <me@tobhe.de>  Thu, 08 Sep 2022 15:21:03 +0200
 
 asahi-scripts (20220821-3) jammy; urgency=medium
 

@@ -1,3 +1,4 @@
 ubuntu-install.patch
 ubuntu-remove-pacman.patch
 ubuntu-fix-first-boot.patch
+ubuntu-fix-update-vendor-firmware.patch
