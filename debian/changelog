@@ -1,3 +1,10 @@
+asahi-scripts (20220821-13) jammy; urgency=medium
+
+  * Add back grub-probe hack in first-boot. The underlying bug
+    still persists.
+
+ -- Tobias Heider <me@tobhe.de>  Sun, 11 Sep 2022 17:07:36 +0200
+
 asahi-scripts (20220821-11) jammy; urgency=medium
 
   * Install systemd want targets
