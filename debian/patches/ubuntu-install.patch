@@ -6,14 +6,13 @@ Index: asahi-scripts/Makefile
 ===================================================================
 --- asahi-scripts.orig/Makefile
 +++ asahi-scripts/Makefile
-@@ -1,31 +1,27 @@
+@@ -1,4 +1,4 @@
 -PREFIX=/usr/local
 +PREFIX=/usr
  
--SCRIPTS=update-vendor-firmware update-grub first-boot update-m1n1
-+SCRIPTS=update-vendor-firmware update-grub first-boot
+ SCRIPTS=update-vendor-firmware update-grub first-boot update-m1n1
  UNITS=first-boot.service update-vendor-firmware.service systemd-udev-trigger-early.service
- MULTI_USER_WANTS=first-boot.service
+@@ -6,26 +6,22 @@ MULTI_USER_WANTS=first-boot.service
  SYSINIT_WANTS=update-vendor-firmware.service systemd-udev-trigger-early.service
  
  install:
