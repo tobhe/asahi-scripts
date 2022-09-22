@@ -1,3 +1,11 @@
+asahi-scripts (20220821-14) jammy; urgency=medium
+
+  * Include update-m1n1 with distro specific changes
+    - Fix firmware, m1n1 and u-boot paths in update-m1n1
+    - Install update-m1n1
+
+ -- Tobias Heider <me@tobhe.de>  Fri, 23 Sep 2022 01:29:58 +0200
+
 asahi-scripts (20220821-13) jammy; urgency=medium
 
   * Add back grub-probe hack in first-boot. The underlying bug

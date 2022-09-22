@@ -1,0 +1,29 @@
+Index: asahi-scripts/update-m1n1
+===================================================================
+--- asahi-scripts.orig/update-m1n1
++++ asahi-scripts/update-m1n1
+@@ -1,7 +1,8 @@
+-#!/bin/sh
++#!/bin/bash
+ set -e
+ 
+-src="/usr/lib/asahi-boot/"
++m1n1_src="/usr/share/m1n1/"
++uboot_src="/usr/share/u-boot-asahi/"
+ umount=false
+ 
+ if [ ! -z "$1" ]; then
+@@ -41,10 +42,10 @@ else
+ 	fi
+ fi
+ 
+-DTBS=/lib/modules/*-ARCH/dtbs/*
++DTBS=/lib/firmware/*-asahi/device-tree/apple/*.dtb
+ 
+-cat "$src/m1n1.bin" $DTBS \
+-    <(gzip -c "$src/u-boot-nodtb.bin") \
++cat "${m1n1_src}/m1n1.bin" $DTBS \
++    <(gzip -c "${uboot_src}/u-boot-nodtb.bin") \
+     >"${target}.new"
+ mv -f "${target}.new" "$target"
+ 
