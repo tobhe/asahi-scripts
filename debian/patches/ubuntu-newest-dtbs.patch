@@ -1,0 +1,18 @@
+Description: Only include the newest device trees in bootloader
+Author: Tobias Heider <me@tobhe.de>
+Last-Updated: 2022-10-31
+
+Index: asahi-scripts/update-m1n1
+===================================================================
+--- asahi-scripts.orig/update-m1n1
++++ asahi-scripts/update-m1n1
+@@ -42,7 +42,8 @@ else
+ 	fi
+ fi
+ 
+-DTBS=/lib/firmware/*-asahi/device-tree/apple/*.dtb
++KPATHS=(/lib/firmware/*/device-tree)
++DTBS=${KPATHS[-1]}/apple/*.dtb
+ 
+ if [ ! -e "${uboot_src}/u-boot-nodtb.bin" ]; then
+ 	echo "${uboot_src}/u-boot-nodtb.bin not found" 1>&2
