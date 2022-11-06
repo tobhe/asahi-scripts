@@ -13,7 +13,7 @@ Index: asahi-scripts/update-m1n1
  umount=false
  
  if [ ! -z "$1" ]; then
-@@ -41,10 +42,10 @@ else
+@@ -41,10 +42,15 @@ else
  	fi
  fi
  
@@ -22,6 +22,11 @@ Index: asahi-scripts/update-m1n1
  
 -cat "$src/m1n1.bin" $DTBS \
 -    <(gzip -c "$src/u-boot-nodtb.bin") \
++if [ ! -e "${uboot_src}/u-boot-nodtb.bin" ]; then
++	echo "${uboot_src}/u-boot-nodtb.bin not found" 1>&2
++	exit 1
++fi
++
 +cat "${m1n1_src}/m1n1.bin" $DTBS \
 +    <(gzip -c "${uboot_src}/u-boot-nodtb.bin") \
      >"${target}.new"
