@@ -62,7 +62,7 @@ asahi-scripts (20220821-3) jammy; urgency=medium
   * Add symlink for /usr/sbin/update-grub for scripts using the absolute
     path
 
- -- Tobias Heider <tobias.heider@canonical.com>  Wed, 07 Sep 2022 18:11:04 +0200
+ -- Tobias Heider <me@tobhe.de>  Wed, 07 Sep 2022 18:11:04 +0200
 
 asahi-scripts (20220821-2) jammy; urgency=medium
 

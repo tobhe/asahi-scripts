@@ -1,4 +1,8 @@
 #!/bin/sh
 
+set -e
+
 # Remove update-grub from grub2-common as we provide our own version
 dpkg-divert --package asahi-scripts --divert /usr/sbin/update-grub.old --rename /usr/sbin/update-grub
+
+#DEBHELPER#
