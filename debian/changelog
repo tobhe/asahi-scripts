@@ -1,3 +1,10 @@
+asahi-scripts (20220821-15) jammy; urgency=medium
+
+  * d/p/ubuntu-newest-dtbs.patch: Only include device trees from
+    newest kernel in bootloader blob
+
+ -- Tobias Heider <me@tobhe.de>  Mon, 31 Oct 2022 14:30:30 +0100
+
 asahi-scripts (20220821-14) jammy; urgency=medium
 
   * Include update-m1n1 with distro specific changes
