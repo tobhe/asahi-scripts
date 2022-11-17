@@ -4,3 +4,4 @@ ubuntu-fix-first-boot.patch
 ubuntu-fix-update-vendor-firmware.patch
 ubuntu-bootloader-paths.patch
 ubuntu-newest-dtbs.patch
+ubuntu-kernel-hook.patch
