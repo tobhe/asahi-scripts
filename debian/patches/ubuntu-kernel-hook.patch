@@ -1,0 +1,40 @@
+Index: asahi-scripts/zz-update-m1n1
+===================================================================
+--- /dev/null
++++ asahi-scripts/zz-update-m1n1
+@@ -0,0 +1,21 @@
++#! /bin/sh
++set -e
++
++which update-m1n1 >/dev/null 2>&1 || exit 0
++
++set -- $DEB_MAINT_PARAMS
++mode="${1#\'}"
++mode="${mode%\'}"
++case $0:$mode in
++    # Only run on postinst configure and postrm remove, to avoid wasting
++    # time by calling update-grub multiple times on upgrade and removal.
++    # Also run if we have no DEB_MAINT_PARAMS, in order to work with old
++    # kernel packages.
++    */postinst.d/*:|*/postinst.d/*:configure|*/postrm.d/*:|*/postrm.d/*:remove)
++	if [ -e /boot/efi/m1n1/boot.bin ]; then
++		exec update-m1n1
++	fi
++	;;
++esac
++
++exit 0
+Index: asahi-scripts/Makefile
+===================================================================
+--- asahi-scripts.orig/Makefile
++++ asahi-scripts/Makefile
+@@ -11,6 +11,9 @@ install:
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
+ 	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
++	install -d $(DESTDIR)/etc/kernel/postinst.d/
++	install -m0755 -t $(DESTDIR)/etc/kernel/postinst.d/ zz-update-m1n1
++
+ 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
+ 	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
+ 		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
