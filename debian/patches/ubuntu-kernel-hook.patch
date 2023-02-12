@@ -4,21 +4,22 @@ Subject: ubuntu-kernel-hook
 
 ===================================================================
 ---
- Makefile       |  4 ++++
+ Makefile       |  5 +++++
  zz-update-m1n1 | 21 +++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+ 2 files changed, 26 insertions(+)
  create mode 100644 zz-update-m1n1
 
 diff --git a/Makefile b/Makefile
-index b6bf298..e903052 100644
+index b6bf298..abd8935 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -11,6 +11,10 @@ install:
+@@ -11,6 +11,11 @@ install:
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
  	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
 +	install -d $(DESTDIR)/etc/kernel/postinst.d/
 +	install -m0755 -t $(DESTDIR)/etc/kernel/postinst.d/ zz-update-m1n1
++	install -d $(DESTDIR)/etc/kernel/postrm.d/
 +	install -m0755 -t $(DESTDIR)/etc/kernel/postrm.d/ zz-update-m1n1
 +
  	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
