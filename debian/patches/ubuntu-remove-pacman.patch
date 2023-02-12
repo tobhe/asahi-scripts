@@ -1,11 +1,16 @@
-Description: Remove Arch Linux specific commands
-Author: Tobias Heider <me@tobhe.de>
-Last-Update: 2022-09-07
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 12 Feb 2023 01:23:08 +0100
+Subject: Remove Arch Linux specific commands
 
-Index: asahi-scripts-20220821/first-boot
-===================================================================
---- asahi-scripts-20220821.orig/first-boot
-+++ asahi-scripts-20220821/first-boot
+Last-Update: 2022-09-07
+---
+ first-boot | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/first-boot b/first-boot
+index e5be574..d885a4d 100755
+--- a/first-boot
++++ b/first-boot
 @@ -39,9 +39,3 @@ EOF
  fi
  

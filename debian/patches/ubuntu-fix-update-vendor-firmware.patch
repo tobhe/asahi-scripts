@@ -1,11 +1,16 @@
-Description: Use bash, dash does not support process substitution
-Author: Tobias Heider <me@tobhe.de>
-Last-Update: 2022-09-10
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 12 Feb 2023 01:23:08 +0100
+Subject: Use bash, dash does not support process substitution
 
-Index: asahi-scripts/update-vendor-firmware
-===================================================================
---- asahi-scripts.orig/update-vendor-firmware
-+++ asahi-scripts/update-vendor-firmware
+Last-Update: 2022-09-10
+---
+ update-vendor-firmware | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/update-vendor-firmware b/update-vendor-firmware
+index ef63628..1659753 100755
+--- a/update-vendor-firmware
++++ b/update-vendor-firmware
 @@ -1,4 +1,4 @@
 -#!/bin/sh
 +#!/bin/bash
