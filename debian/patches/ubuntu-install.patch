@@ -1,11 +1,17 @@
-Description: Only install what we need for now
-Author: Tobias Heider <me@tobhe.de>
-Last-Update: 2022-09-07
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 12 Feb 2023 01:23:08 +0100
+Subject: Only install what we need for now
 
-Index: asahi-scripts/Makefile
-===================================================================
---- asahi-scripts.orig/Makefile
-+++ asahi-scripts/Makefile
+Last-Update: 2022-09-07
+---
+ Makefile                   | 16 ++++++----------
+ systemd/first-boot.service |  2 +-
+ 2 files changed, 7 insertions(+), 11 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 615e1f9..b6bf298 100644
+--- a/Makefile
++++ b/Makefile
 @@ -1,4 +1,4 @@
 -PREFIX=/usr/local
 +PREFIX=/usr
@@ -44,10 +50,10 @@ Index: asahi-scripts/Makefile
 -	rm -f $(DESTDIR)$(PREFIX)/share/libalpm/hooks/95-m1n1-install.hook
  
  .PHONY: install uninstall
-Index: asahi-scripts/systemd/first-boot.service
-===================================================================
---- asahi-scripts.orig/systemd/first-boot.service
-+++ asahi-scripts/systemd/first-boot.service
+diff --git a/systemd/first-boot.service b/systemd/first-boot.service
+index 485fd47..9ae9080 100644
+--- a/systemd/first-boot.service
++++ b/systemd/first-boot.service
 @@ -10,7 +10,7 @@ ConditionFirstBoot=yes
  [Service]
  Type=oneshot

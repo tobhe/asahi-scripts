@@ -1,11 +1,16 @@
-Description: Only include the newest device trees in bootloader
-Author: Tobias Heider <me@tobhe.de>
-Last-Updated: 2022-10-31
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 12 Feb 2023 01:23:08 +0100
+Subject: Only include the newest device trees in bootloader
 
-Index: asahi-scripts/update-m1n1
-===================================================================
---- asahi-scripts.orig/update-m1n1
-+++ asahi-scripts/update-m1n1
+Last-Updated: 2022-10-31
+---
+ update-m1n1 | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/update-m1n1 b/update-m1n1
+index f0a4af2..d9f5480 100755
+--- a/update-m1n1
++++ b/update-m1n1
 @@ -42,7 +42,8 @@ else
  	fi
  fi

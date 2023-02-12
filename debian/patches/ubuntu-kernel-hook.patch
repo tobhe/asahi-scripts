@@ -1,7 +1,34 @@
-Index: asahi-scripts/zz-update-m1n1
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 12 Feb 2023 01:23:08 +0100
+Subject: ubuntu-kernel-hook
+
 ===================================================================
+---
+ Makefile       |  4 ++++
+ zz-update-m1n1 | 21 +++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
+ create mode 100644 zz-update-m1n1
+
+diff --git a/Makefile b/Makefile
+index b6bf298..e903052 100644
+--- a/Makefile
++++ b/Makefile
+@@ -11,6 +11,10 @@ install:
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
+ 	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
++	install -d $(DESTDIR)/etc/kernel/postinst.d/
++	install -m0755 -t $(DESTDIR)/etc/kernel/postinst.d/ zz-update-m1n1
++	install -m0755 -t $(DESTDIR)/etc/kernel/postrm.d/ zz-update-m1n1
++
+ 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
+ 	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
+ 		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
+diff --git a/zz-update-m1n1 b/zz-update-m1n1
+new file mode 100644
+index 0000000..1cdac6a
 --- /dev/null
-+++ asahi-scripts/zz-update-m1n1
++++ b/zz-update-m1n1
 @@ -0,0 +1,21 @@
 +#! /bin/sh
 +set -e
@@ -24,17 +51,3 @@ Index: asahi-scripts/zz-update-m1n1
 +esac
 +
 +exit 0
-Index: asahi-scripts/Makefile
-===================================================================
---- asahi-scripts.orig/Makefile
-+++ asahi-scripts/Makefile
-@@ -11,6 +11,9 @@ install:
- 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
- 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
- 	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
-+	install -d $(DESTDIR)/etc/kernel/postinst.d/
-+	install -m0755 -t $(DESTDIR)/etc/kernel/postinst.d/ zz-update-m1n1
-+
- 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
- 	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
- 		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
