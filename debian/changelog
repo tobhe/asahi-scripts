@@ -1,3 +1,10 @@
+asahi-scripts (20220821-17+lunar0) lunar; urgency=medium
+
+  * Remove workaround for missing systemd-firstboot.service which
+    is included with lunar
+
+ -- Tobias Heider <me@tobhe.de>  Thu, 30 Mar 2023 03:06:05 +0200
+
 asahi-scripts (20220821-17) jammy; urgency=medium
 
   * Move to gbp, add kernel postrm hook
