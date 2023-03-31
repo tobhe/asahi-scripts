@@ -1,3 +1,9 @@
+asahi-scripts (20220821-17+lunar1) lunar; urgency=medium
+
+  * Add fixes to deal with systemd unmounting shenanigans.
+
+ -- Tobias Heider <me@tobhe.de>  Fri, 31 Mar 2023 02:33:33 +0200
+
 asahi-scripts (20220821-17+lunar0) lunar; urgency=medium
 
   * Remove workaround for missing systemd-firstboot.service which
