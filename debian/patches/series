@@ -5,3 +5,5 @@ ubuntu-fix-update-vendor-firmware.patch
 ubuntu-bootloader-paths.patch
 ubuntu-newest-dtbs.patch
 ubuntu-kernel-hook.patch
+0008-Depend-on-systemd-udev-trigger-early-to-remove-uuid-.patch
+0009-Reload-boot-efi.mount-and-remount-boot-efi-to-deal-w.patch
