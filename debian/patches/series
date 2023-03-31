@@ -5,4 +5,3 @@ ubuntu-fix-update-vendor-firmware.patch
 ubuntu-bootloader-paths.patch
 ubuntu-newest-dtbs.patch
 ubuntu-kernel-hook.patch
-0008-first-boot-depends-on-the-file-system-being-mounted.patch
