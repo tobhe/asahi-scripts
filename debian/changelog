@@ -1,3 +1,10 @@
+asahi-scripts (20220821-17+lunar4) lunar; urgency=medium
+
+  * Pass root_uuid directly to update-grub to prevent a race
+    on first-boot where update-grub sometimes selects the old uuid.
+
+ -- Tobias Heider <me@tobhe.de>  Tue, 04 Apr 2023 16:59:40 +0200
+
 asahi-scripts (20220821-17+lunar3) lunar; urgency=medium
 
   * Fixup first-boot service for lunar
