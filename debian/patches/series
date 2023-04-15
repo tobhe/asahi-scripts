@@ -6,4 +6,3 @@ ubuntu-bootloader-paths.patch
 ubuntu-newest-dtbs.patch
 ubuntu-kernel-hook.patch
 0008-Fixup-first-boot-for-Ubuntu.patch
-0009-Pass-root_uuid-directly-to-update-grub-to-prevent-a-.patch
