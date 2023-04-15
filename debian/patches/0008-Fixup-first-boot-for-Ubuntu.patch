@@ -2,37 +2,16 @@ From: Tobias Heider <me@tobhe.de>
 Date: Fri, 31 Mar 2023 02:24:45 +0200
 Subject: Fixup first-boot for Ubuntu
 
-Fix first-boot.service dependencies, add udev synchronization and
-remount boot-efi after it is changed in fstab to remove uuid hack
-Use fatlabel to write fat uuid.
 ---
- first-boot                 | 23 +++++++++++------------
+ first-boot                 | 12 +++++++-----
  systemd/first-boot.service |  3 ++-
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
 diff --git a/first-boot b/first-boot
-index d1d0305..f114349 100755
+index d1d0305..92f0aed 100755
 --- a/first-boot
 +++ b/first-boot
-@@ -3,9 +3,16 @@
- 
- set -e
- 
-+cleanup () {
-+    udevadm control -S
-+    systemctl daemon-reload
-+    systemctl restart boot-efi.mount
-+}
-+trap cleanup EXIT
-+
-+udevadm control -s
- root_dev=$(findmnt -n -o SOURCE /)
- efi_dev=$(findmnt -n -o SOURCE /boot/efi)
--root_uuid_old=$(findmnt -n -o UUID /)
- 
- if [ -e "$root_dev" ]; then
-     echo "Randomizing root filesystem UUID..."
-@@ -20,10 +27,7 @@ if [ -e "$efi_dev" ] && \
+@@ -20,10 +20,7 @@ if [ -e "$efi_dev" ] && \
      blkid "$efi_dev" | grep -q 'TYPE="vfat"'; then
  
      echo "Randomizing EFI system partition UUID..."
@@ -44,20 +23,23 @@ index d1d0305..f114349 100755
  
      efi_uuid="$(blkid -c /dev/null "$efi_dev" -o export | grep '^UUID=')"
      echo "EFI partition: $efi_uuid"
-@@ -39,11 +43,6 @@ EOF
+@@ -39,10 +36,15 @@ EOF
      echo
  fi
  
--# XXX: grub-probe will look for the old UUID, this will keep it happy.
--#      sleep 1 is needed to make sure the new dev exists.
--if [ ! -z "$root_uuid" ]; then
--    sleep 1
--    ln -s "/dev/disk/by-uuid/$(echo "$root_uuid" | cut -d "=" -f2)" "/dev/disk/by-uuid/$root_uuid_old"
--fi
--
- update-grub
++# Wait for udev and remount ESP
++udevadm trigger -w "$root_dev"
++udevadm trigger -w "$efi_dev"
++systemctl daemon-reload
++systemctl restart boot-efi.mount
 +
-+cleanup
+ # XXX: grub-probe will look for the old UUID, this will keep it happy.
+ #      sleep 1 is needed to make sure the new dev exists.
+ if [ ! -z "$root_uuid" ]; then
+-    sleep 1
+     ln -s "/dev/disk/by-uuid/$(echo "$root_uuid" | cut -d "=" -f2)" "/dev/disk/by-uuid/$root_uuid_old"
+ fi
+ 
 diff --git a/systemd/first-boot.service b/systemd/first-boot.service
 index 9ae9080..052d5fa 100644
 --- a/systemd/first-boot.service
