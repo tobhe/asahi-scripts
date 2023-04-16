@@ -1,3 +1,9 @@
+asahi-scripts (20220821-17+lunar6) lunar; urgency=medium
+
+  * Add udev barriers to fix more races in first-boot.
+
+ -- Tobias Heider <me@tobhe.de>  Sun, 16 Apr 2023 22:48:42 +0200
+
 asahi-scripts (20220821-17+lunar4) lunar; urgency=medium
 
   * Pass root_uuid directly to update-grub to prevent a race
