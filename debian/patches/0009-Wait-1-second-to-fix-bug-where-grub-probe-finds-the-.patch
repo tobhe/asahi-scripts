@@ -1,0 +1,25 @@
+From: Tobias Heider <me@tobhe.de>
+Date: Wed, 19 Apr 2023 14:54:38 +0200
+Subject: Wait 1 second to fix bug where grub-probe finds the old UUID.
+
+---
+ first-boot | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/first-boot b/first-boot
+index 434ae98..6048a57 100755
+--- a/first-boot
++++ b/first-boot
+@@ -50,9 +50,11 @@ systemctl daemon-reload
+ systemctl restart boot-efi.mount
+ 
+ # XXX: grub-probe will look for the old UUID, this will keep it happy.
+-#      sleep 1 is needed to make sure the new dev exists.
+ if [ ! -z "$root_uuid" ]; then
+     ln -s "/dev/disk/by-uuid/$(echo "$root_uuid" | cut -d "=" -f2)" "/dev/disk/by-uuid/$root_uuid_old"
+ fi
+ 
++# XXX: Wait a bit to help grub-probe find the right UUID
++sleep 1
++
+ update-grub
