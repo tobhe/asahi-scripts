@@ -1,3 +1,9 @@
+asahi-scripts (20220821-17+lunar7) lunar; urgency=medium
+
+  * Add sleep in first boot to help grub-probe find the correct UUID
+
+ -- Tobias Heider <me@tobhe.de>  Wed, 19 Apr 2023 14:55:51 +0200
+
 asahi-scripts (20220821-17+lunar6) lunar; urgency=medium
 
   * Add udev barriers to fix more races in first-boot.
