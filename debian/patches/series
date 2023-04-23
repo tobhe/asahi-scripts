@@ -6,4 +6,4 @@ ubuntu-bootloader-paths.patch
 ubuntu-newest-dtbs.patch
 ubuntu-kernel-hook.patch
 0008-Fixup-first-boot-for-Ubuntu.patch
-0009-Wait-1-second-to-fix-bug-where-grub-probe-finds-the-.patch
+0009-Wait-a-bit-to-fix-bug-where-grub-probe-finds-the-old.patch
