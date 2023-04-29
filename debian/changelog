@@ -1,3 +1,9 @@
+asahi-scripts (20221220-1) kinetic; urgency=medium
+
+  * Rebase onto 20221220
+
+ -- Tobias Heider <me@tobhe.de>  Sat, 29 Apr 2023 21:14:25 +0200
+
 asahi-scripts (20220821-17+lunar8) lunar; urgency=medium
 
   * Increase sleep time. grub-probe is still unreliable.
