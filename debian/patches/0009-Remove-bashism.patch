@@ -1,0 +1,22 @@
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 30 Apr 2023 01:21:53 +0200
+Subject: Remove bashism
+
+---
+ Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 3e9f500..2994a0b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -59,7 +59,8 @@ install-initramfs: install
+ install-boot:
+ 	install -m0755 -t $(DESTDIR)$(BIN_DIR)/ $(BUILD_BOOT_SCRIPTS)
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
+-	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
++	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
++	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/sysinit.target.wants
+ 	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
+ 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
+ 	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \

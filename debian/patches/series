@@ -5,3 +5,5 @@ ubuntu-bootloader-paths.patch
 ubuntu-kernel-hook.patch
 0007-Fixup-first-boot-for-Ubuntu.patch
 0008-Wait-a-bit-to-fix-bug-where-grub-probe-finds-the-old.patch
+0008-Add-initramfs-tools-implementation-for-cpio-firmware.patch
+0009-Remove-bashism.patch
