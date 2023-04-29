@@ -1,0 +1,305 @@
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 30 Apr 2023 01:14:11 +0200
+Subject: Add initramfs-tools implementation for cpio firmware loading
+
+- Add initramfs hooks and boot scripts to extract and mount firmware
+- Add install-initramfs make target
+- busybox mount doesn't support PARTUUID= so use /dev/disk/by-partuuid
+---
+ Makefile                            | 19 ++++++++----
+ functions.sh                        |  4 +--
+ initramfs/hooks/asahi               | 26 ++++++++++++++++
+ initramfs/kernel/zz-update-m1n1     | 21 +++++++++++++
+ initramfs/modules                   | 33 ++++++++++++++++++++
+ initramfs/scripts/init-bottom/asahi | 19 ++++++++++++
+ initramfs/scripts/init-top/asahi    | 61 +++++++++++++++++++++++++++++++++++++
+ zz-update-m1n1                      | 21 -------------
+ 8 files changed, 175 insertions(+), 29 deletions(-)
+ create mode 100644 initramfs/hooks/asahi
+ create mode 100644 initramfs/kernel/zz-update-m1n1
+ create mode 100644 initramfs/modules
+ create mode 100644 initramfs/scripts/init-bottom/asahi
+ create mode 100644 initramfs/scripts/init-top/asahi
+ delete mode 100644 zz-update-m1n1
+
+diff --git a/Makefile b/Makefile
+index 75d727d..3e9f500 100644
+--- a/Makefile
++++ b/Makefile
+@@ -44,16 +44,23 @@ install-dracut: install
+ 	install -m0755 -t $(DESTDIR)$(DRACUT_MODULES_DIR)/99asahi-firmware dracut/modules.d/99asahi-firmware/load-asahi-firmware.sh
+ 	install -m0755 -t $(DESTDIR)$(DRACUT_MODULES_DIR)/99asahi-firmware dracut/modules.d/99asahi-firmware/module-setup.sh
+ 
++install-initramfs: install
++	install -d $(DESTDIR)/etc/kernel/postinst.d/
++	install -m0755 -t $(DESTDIR)/etc/kernel/postinst.d/ initramfs/kernel/zz-update-m1n1
++	install -d $(DESTDIR)/etc/kernel/postrm.d/
++	install -m0755 -t $(DESTDIR)/etc/kernel/postrm.d/ initramfs/kernel/zz-update-m1n1
++	install -d $(DESTDIR)/etc/initramfs-tools/hooks/
++	install -m0755 -t $(DESTDIR)/etc/initramfs-tools/hooks/ initramfs/hooks/asahi
++	install -d $(DESTDIR)/etc/initramfs-tools/scripts/init-top
++	install -m0755 -t $(DESTDIR)/etc/initramfs-tools/scripts/init-top initramfs/scripts/init-top/asahi
++	install -d $(DESTDIR)/etc/initramfs-tools/scripts/init-bottom
++	install -m0755 -t $(DESTDIR)/etc/initramfs-tools/scripts/init-bottom initramfs/scripts/init-bottom/asahi
++
+ install-boot:
+ 	install -m0755 -t $(DESTDIR)$(BIN_DIR)/ $(BUILD_BOOT_SCRIPTS)
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
+ 	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
+ 	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
+-	install -d $(DESTDIR)/etc/kernel/postinst.d/
+-	install -m0755 -t $(DESTDIR)/etc/kernel/postinst.d/ zz-update-m1n1
+-	install -d $(DESTDIR)/etc/kernel/postrm.d/
+-	install -m0755 -t $(DESTDIR)/etc/kernel/postrm.d/ zz-update-m1n1
+-
+ 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
+ 	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
+ 		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
+@@ -64,7 +71,7 @@ install-arch: install install-mkinitcpio install-boot
+ 
+ install-fedora: install install-dracut
+ 
+-install-ubuntu: install install-boot
++install-ubuntu: install install-initramfs install-boot
+ 
+ uninstall:
+ 	rm -f $(addprefix $(DESTDIR)$(BIN_DIR)/,$(SCRIPTS))
+diff --git a/functions.sh b/functions.sh
+index df3a6ea..1f5f350 100644
+--- a/functions.sh
++++ b/functions.sh
+@@ -43,7 +43,7 @@ mount_sys_esp() {
+         mount --bind "$bootmnt" "$mountpoint"
+         warn "System ESP not identified in device tree, using $bootmnt"
+     else
+-        mount "PARTUUID=$esp_uuid" "$mountpoint"
++        mount "/dev/disk/by-partuuid/$esp_uuid" "$mountpoint"
+     fi
+     dev="$(grep "$mountpoint" /proc/mounts | cut -d" " -f1)"
+     info "Mounted System ESP $dev at $mountpoint"
+@@ -72,7 +72,7 @@ mount_boot_esp() {
+             return 1
+         fi
+ 
+-        mount "PARTUUID=$esp_uuid" "$mountpoint"
++        mount "/dev/disk/by-partuuid/$esp_uuid" "$mountpoint"
+     fi
+     info "Mounted Boot ESP at $mountpoint"
+ }
+diff --git a/initramfs/hooks/asahi b/initramfs/hooks/asahi
+new file mode 100644
+index 0000000..137f403
+--- /dev/null
++++ b/initramfs/hooks/asahi
+@@ -0,0 +1,26 @@
++#!/bin/sh
++
++PREREQ=""
++
++prereqs()
++{
++        echo "$PREREQ"
++}
++
++case $1 in
++prereqs)
++        prereqs
++        exit 0
++        ;;
++esac
++
++# Hooks for loading asahi modules and firmware
++
++. /usr/share/initramfs-tools/hook-functions
++
++mkdir -p "${DESTDIR}/lib/firmware"
++mkdir -p "${DESTDIR}/usr/share/asahi-scripts"
++cp -r /usr/share/asahi-scripts/* "${DESTDIR}/usr/share/asahi-scripts"
++copy_exec /usr/bin/cpio
++
++add_modules_from_file /usr/share/asahi-scripts/modules
+diff --git a/initramfs/kernel/zz-update-m1n1 b/initramfs/kernel/zz-update-m1n1
+new file mode 100644
+index 0000000..1cdac6a
+--- /dev/null
++++ b/initramfs/kernel/zz-update-m1n1
+@@ -0,0 +1,21 @@
++#! /bin/sh
++set -e
++
++which update-m1n1 >/dev/null 2>&1 || exit 0
++
++set -- $DEB_MAINT_PARAMS
++mode="${1#\'}"
++mode="${mode%\'}"
++case $0:$mode in
++    # Only run on postinst configure and postrm remove, to avoid wasting
++    # time by calling update-grub multiple times on upgrade and removal.
++    # Also run if we have no DEB_MAINT_PARAMS, in order to work with old
++    # kernel packages.
++    */postinst.d/*:|*/postinst.d/*:configure|*/postrm.d/*:|*/postrm.d/*:remove)
++	if [ -e /boot/efi/m1n1/boot.bin ]; then
++		exec update-m1n1
++	fi
++	;;
++esac
++
++exit 0
+diff --git a/initramfs/modules b/initramfs/modules
+new file mode 100644
+index 0000000..19ac8ae
+--- /dev/null
++++ b/initramfs/modules
+@@ -0,0 +1,33 @@
++# For NVMe & SMC
++apple-mailbox
++# For NVMe
++nvme_apple
++# For USB and HID
++pinctrl-apple-gpio
++# SMC core
++macsmc
++macsmc-rtkit
++# For USB
++i2c-apple
++tps6598x
++apple-dart
++dwc3
++dwc3-of-simple
++nvmem-apple-efuses
++phy-apple-atc
++xhci-pci
++pcie-apple
++gpio_macsmc
++# For HID
++spi-apple
++spi-hid-apple
++spi-hid-apple-of
++# For RTC
++rtc-macsmc
++simple-mfd-spmi
++spmi-apple-controller
++nvmem_spmi_mfd
++# For MTP HID
++apple-dockchannel
++dockchannel-hid
++apple-rtkit-helper
+diff --git a/initramfs/scripts/init-bottom/asahi b/initramfs/scripts/init-bottom/asahi
+new file mode 100644
+index 0000000..66d5e50
+--- /dev/null
++++ b/initramfs/scripts/init-bottom/asahi
+@@ -0,0 +1,19 @@
++#!/usr/bin/sh
++
++PREREQ=""
++prereqs()
++{
++        echo "$PREREQ"
++}
++case $1 in
++# get pre-requisites
++prereqs)
++        prereqs
++        exit 0
++        ;;
++esac
++
++. /scripts/functions
++
++mount -t tmpfs vendorfw "${rootmnt}/lib/firmware/vendor"
++cp -r /lib/firmware/vendor/* /lib/firmware/vendor/.vendorfw.manifest "${rootmnt}/lib/firmware/vendor"
+diff --git a/initramfs/scripts/init-top/asahi b/initramfs/scripts/init-top/asahi
+new file mode 100644
+index 0000000..db2ae06
+--- /dev/null
++++ b/initramfs/scripts/init-top/asahi
+@@ -0,0 +1,61 @@
++#!/usr/bin/sh
++
++PREREQ="udev"
++prereqs()
++{
++        echo "$PREREQ"
++}
++case $1 in
++# get pre-requisites
++prereqs)
++        prereqs
++        exit 0
++        ;;
++esac
++
++. /scripts/functions
++
++if [ -e /lib/firmware/vendor ]; then
++	log_failure_msg "Vendor firmware was loaded by the bootloader"
++	return 1
++fi
++
++if [ ! -e /proc/device-tree/chosen/asahi,efi-system-partition ]; then
++	log_failure_msg "Missing asahi,efi-system-partition variable, firmware will not be loaded!"
++	return 1
++fi
++
++log_success_msg "Load NVME modules"
++modprobe apple-mailbox
++modprobe nvme-apple
++
++for i in $(seq 0 50); do
++[ -e /sys/bus/platform/drivers/nvme-apple/*.nvme/nvme/nvme*/nvme*n1/ ] && break
++	sleep 0.1
++done
++
++if [ ! -e /sys/bus/platform/drivers/nvme-apple/*.nvme/nvme/nvme*/nvme*n1/ ]; then
++err "Timed out waiting for NVMe device"
++	return 1
++fi
++
++# If the above exists, hopefully the /dev device exists and this will work
++
++VENDORFW="/run/.system-efi/vendorfw/"
++
++(
++	. /usr/share/asahi-scripts/functions.sh
++	mount_sys_esp /run/.system-efi
++)
++
++if [ ! -e "$VENDORFW/firmware.cpio" ]; then
++	log_failure_msg "Vendor firmware not available in ESP!"
++	umount /run/.system-efi
++	return 1
++fi
++
++
++( cd /lib/firmware; cpio -i < "$VENDORFW/firmware.cpio"; mv vendorfw vendor )
++umount /run/.system-efi
++
++log_success_msg "Asahi: Vendor firmware unpacked successfully"
+diff --git a/zz-update-m1n1 b/zz-update-m1n1
+deleted file mode 100644
+index 1cdac6a..0000000
+--- a/zz-update-m1n1
++++ /dev/null
+@@ -1,21 +0,0 @@
+-#! /bin/sh
+-set -e
+-
+-which update-m1n1 >/dev/null 2>&1 || exit 0
+-
+-set -- $DEB_MAINT_PARAMS
+-mode="${1#\'}"
+-mode="${mode%\'}"
+-case $0:$mode in
+-    # Only run on postinst configure and postrm remove, to avoid wasting
+-    # time by calling update-grub multiple times on upgrade and removal.
+-    # Also run if we have no DEB_MAINT_PARAMS, in order to work with old
+-    # kernel packages.
+-    */postinst.d/*:|*/postinst.d/*:configure|*/postrm.d/*:|*/postrm.d/*:remove)
+-	if [ -e /boot/efi/m1n1/boot.bin ]; then
+-		exec update-m1n1
+-	fi
+-	;;
+-esac
+-
+-exit 0
