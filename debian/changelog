@@ -1,3 +1,9 @@
+asahi-scripts (20221220-4) kinetic; urgency=medium
+
+  * Fix update-grub. Run as bash, remove non-existing paths.
+
+ -- Tobias Heider <me@tobhe.de>  Sun, 30 Apr 2023 01:49:15 +0200
+
 asahi-scripts (20221220-3) kinetic; urgency=medium
 
   * Implement firmware loading via firmware.cpio
