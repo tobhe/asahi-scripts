@@ -1,3 +1,9 @@
+asahi-scripts (20221220-2) kinetic; urgency=medium
+
+  * Use override_dh_auto_install to call install-ubuntu target
+
+ -- Tobias Heider <me@tobhe.de>  Sat, 29 Apr 2023 21:44:39 +0200
+
 asahi-scripts (20221220-1) kinetic; urgency=medium
 
   * Rebase onto 20221220
