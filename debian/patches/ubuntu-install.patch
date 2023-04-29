@@ -1,55 +1,83 @@
 From: Tobias Heider <me@tobhe.de>
 Date: Sun, 12 Feb 2023 01:23:08 +0100
-Subject: Only install what we need for now
+Subject: Add install-ubuntu target
+
+Refactor install-arch, move the systemd services, first-boot and update-grub to
+new install-boot target. Only install what is needed on Ubuntu.
 
 Last-Update: 2022-09-07
 ---
- Makefile                   | 16 ++++++----------
+ Makefile                   | 23 +++++++++++++++--------
  systemd/first-boot.service |  2 +-
- 2 files changed, 7 insertions(+), 11 deletions(-)
+ 2 files changed, 16 insertions(+), 9 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 615e1f9..b6bf298 100644
+index fae421b..ad97590 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1,4 +1,4 @@
+@@ -1,17 +1,17 @@
 -PREFIX=/usr/local
-+PREFIX=/usr
++PREFIX=/usr/
+ SYS_PREFIX=$(PREFIX)
+ CONFIG_DIR=/etc/default
+ BIN_DIR=$(PREFIX)/bin
+ SCRIPTS=asahi-diagnose asahi-fwextract update-m1n1
+-ARCH_SCRIPTS=update-grub first-boot
++BOOT_SCRIPTS=update-grub first-boot
+ UNITS=first-boot.service
+ MULTI_USER_WANTS=first-boot.service
+ DRACUT_CONF_DIR=$(PREFIX)/lib/dracut/dracut.conf.d
+ DRACUT_MODULES_DIR=$(PREFIX)/lib/dracut/modules.d
+ BUILD_SCRIPTS=$(addprefix build/,$(SCRIPTS))
+-BUILD_ARCH_SCRIPTS=$(addprefix build/,$(ARCH_SCRIPTS))
++BUILD_BOOT_SCRIPTS=$(addprefix build/,$(BOOT_SCRIPTS))
  
- SCRIPTS=update-vendor-firmware update-grub first-boot update-m1n1
- UNITS=first-boot.service update-vendor-firmware.service systemd-udev-trigger-early.service
-@@ -6,26 +6,22 @@ MULTI_USER_WANTS=first-boot.service
- SYSINIT_WANTS=update-vendor-firmware.service systemd-udev-trigger-early.service
+-all: $(BUILD_SCRIPTS) $(BUILD_ARCH_SCRIPTS)
++all: $(BUILD_SCRIPTS) $(BUILD_BOOT_SCRIPTS)
  
- install:
--	install -d $(DESTDIR)$(PREFIX)/bin/
--	install -m0755 -t $(DESTDIR)$(PREFIX)/bin/ $(SCRIPTS)
-+	install -d $(DESTDIR)$(PREFIX)/sbin/
-+	install -m0755 -t $(DESTDIR)$(PREFIX)/sbin/ $(SCRIPTS)
+ build/%: %
+ 	@[ ! -e build ] && mkdir -p build || true
+@@ -44,18 +44,23 @@ install-dracut: install
+ 	install -m0755 -t $(DESTDIR)$(DRACUT_MODULES_DIR)/99asahi-firmware dracut/modules.d/99asahi-firmware/load-asahi-firmware.sh
+ 	install -m0755 -t $(DESTDIR)$(DRACUT_MODULES_DIR)/99asahi-firmware dracut/modules.d/99asahi-firmware/module-setup.sh
+ 
+-install-arch: install install-mkinitcpio
+-	install -m0755 -t $(DESTDIR)$(BIN_DIR)/ $(BUILD_ARCH_SCRIPTS)
++install-boot:
++	install -m0755 -t $(DESTDIR)$(BIN_DIR)/ $(BUILD_BOOT_SCRIPTS)
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
  	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
 +	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
  	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
  		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
-+	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/sysinit.target.wants
- 	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(SYSINIT_WANTS)) \
- 		$(DESTDIR)$(PREFIX)/lib/systemd/system/sysinit.target.wants/
--	install -dD $(DESTDIR)$(PREFIX)/lib/initcpio/install
--	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/initcpio/install initcpio/install/asahi
--	install -dD $(DESTDIR)$(PREFIX)/share/libalpm/hooks
--	install -m0644 -t $(DESTDIR)$(PREFIX)/share/libalpm/hooks libalpm/hooks/95-m1n1-install.hook
++
++install-arch: install install-mkinitcpio install-boot
+ 	install -dD $(DESTDIR)$(PREFIX)/share/libalpm/hooks
+ 	install -m0644 -t $(DESTDIR)$(PREFIX)/share/libalpm/hooks libalpm/hooks/95-m1n1-install.hook
  
+ install-fedora: install install-dracut
+ 
++install-ubuntu: install install-boot
++
  uninstall:
--	rm -f $(addprefix $(DESTDIR)$(PREFIX)/bin/,$(SCRIPTS))
-+	rm -f $(addprefix $(DESTDIR)$(PREFIX)/sbin/,$(SCRIPTS))
+ 	rm -f $(addprefix $(DESTDIR)$(BIN_DIR)/,$(SCRIPTS))
+ 	rm -rf $(DESTDIR)$(PREFIX)/share/asahi-scripts
+@@ -67,10 +72,12 @@ uninstall-mkinitcpio:
+ uninstall-dracut:
+ 	rm -f $(DESTDIR)$(DRACUT_CONF_DIR)/10-asahi.conf
+ 
+-uninstall-arch: uninstall-mkinitcpio
+-	rm -f $(addprefix $(DESTDIR)$(BIN_DIR)/,$(ARCH_SCRIPTS))
++uninstall-boot:
++	rm -f $(addprefix $(DESTDIR)$(BIN_DIR)/,$(BOOT_SCRIPTS))
  	rm -f $(addprefix $(DESTDIR)$(PREFIX)/lib/systemd/system/,$(UNITS))
  	rm -f $(addprefix $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/,$(MULTI_USER_WANTS))
- 	rm -f $(addprefix $(DESTDIR)$(PREFIX)/lib/systemd/system/sysinit.target.wants/,$(SYSINIT_WANTS))
--	rm -f $(DESTDIR)$(PREFIX)/lib/initcpio/install/asahi
--	rm -f $(DESTDIR)$(PREFIX)/share/libalpm/hooks/95-m1n1-install.hook
++
++uninstall-arch: uninstall-mkinitcpio uninstall-boot
+ 	rm -f $(DESTDIR)$(PREFIX)/share/libalpm/hooks/95-m1n1-install.hook
  
- .PHONY: install uninstall
+ uninstall-fedora: uninstall-dracut
 diff --git a/systemd/first-boot.service b/systemd/first-boot.service
 index 485fd47..9ae9080 100644
 --- a/systemd/first-boot.service

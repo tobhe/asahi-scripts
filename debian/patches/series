@@ -1,9 +1,7 @@
 ubuntu-install.patch
 ubuntu-remove-pacman.patch
 ubuntu-fix-first-boot.patch
-ubuntu-fix-update-vendor-firmware.patch
 ubuntu-bootloader-paths.patch
-ubuntu-newest-dtbs.patch
 ubuntu-kernel-hook.patch
-0008-Fixup-first-boot-for-Ubuntu.patch
-0009-Wait-a-bit-to-fix-bug-where-grub-probe-finds-the-old.patch
+0007-Fixup-first-boot-for-Ubuntu.patch
+0008-Wait-a-bit-to-fix-bug-where-grub-probe-finds-the-old.patch

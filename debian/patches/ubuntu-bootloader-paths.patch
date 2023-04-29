@@ -1,43 +1,28 @@
 From: Tobias Heider <me@tobhe.de>
 Date: Sun, 12 Feb 2023 01:23:08 +0100
-Subject: ubuntu-bootloader-paths
+Subject: Update paths for ubuntu.
 
 ===================================================================
 ---
- update-m1n1 | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ update-m1n1 | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/update-m1n1 b/update-m1n1
-index 9de52e5..f0a4af2 100755
+index 841b0af..d5d8668 100755
 --- a/update-m1n1
 +++ b/update-m1n1
-@@ -1,7 +1,8 @@
--#!/bin/sh
-+#!/bin/bash
- set -e
- 
--src="/usr/lib/asahi-boot/"
-+m1n1_src="/usr/share/m1n1/"
-+uboot_src="/usr/share/u-boot-asahi/"
- umount=false
- 
- if [ ! -z "$1" ]; then
-@@ -41,10 +42,15 @@ else
- 	fi
+@@ -11,11 +11,10 @@ else
+     . /usr/share/asahi-scripts/functions.sh
  fi
  
--DTBS=/lib/modules/*-ARCH/dtbs/*
-+DTBS=/lib/firmware/*-asahi/device-tree/apple/*.dtb
+-: ${SOURCE:="/usr/lib/asahi-boot/"}
+-: ${M1N1:="$SOURCE/m1n1.bin"}
+-: ${U_BOOT:="$SOURCE/u-boot-nodtb.bin"}
++: ${M1N1:="/usr/share/m1n1/m1n1.bin"}
++: ${U_BOOT:="/usr/share/u-boot-asahi/u-boot-nodtb.bin"}
+ : ${TARGET:="$1"}
+-: ${DTBS:=/lib/modules/*-ARCH/dtbs/*.dtb}
++: ${DTBS:=/lib/firmware/*-asahi/device-tree/apple/*.dtb}
+ : ${CONFIG:=/etc/m1n1.conf}
  
--cat "$src/m1n1.bin" $DTBS \
--    <(gzip -c "$src/u-boot-nodtb.bin") \
-+if [ ! -e "${uboot_src}/u-boot-nodtb.bin" ]; then
-+	echo "${uboot_src}/u-boot-nodtb.bin not found" 1>&2
-+	exit 1
-+fi
-+
-+cat "${m1n1_src}/m1n1.bin" $DTBS \
-+    <(gzip -c "${uboot_src}/u-boot-nodtb.bin") \
-     >"${target}.new"
- mv -f "${target}.new" "$target"
- 
+ umount=false

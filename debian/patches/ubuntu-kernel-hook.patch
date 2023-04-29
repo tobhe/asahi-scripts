@@ -10,10 +10,10 @@ Subject: ubuntu-kernel-hook
  create mode 100644 zz-update-m1n1
 
 diff --git a/Makefile b/Makefile
-index b6bf298..abd8935 100644
+index ad97590..75d727d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -11,6 +11,11 @@ install:
+@@ -49,6 +49,11 @@ install-boot:
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system/{multi-user,sysinit}.target.wants
  	install -m0644 -t $(DESTDIR)$(PREFIX)/lib/systemd/system $(addprefix systemd/,$(UNITS))
