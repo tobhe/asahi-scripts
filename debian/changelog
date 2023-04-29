@@ -1,3 +1,9 @@
+asahi-scripts (20221220-3) kinetic; urgency=medium
+
+  * Implement firmware loading via firmware.cpio
+
+ -- Tobias Heider <me@tobhe.de>  Sun, 30 Apr 2023 01:18:51 +0200
+
 asahi-scripts (20221220-2) kinetic; urgency=medium
 
   * Use override_dh_auto_install to call install-ubuntu target
