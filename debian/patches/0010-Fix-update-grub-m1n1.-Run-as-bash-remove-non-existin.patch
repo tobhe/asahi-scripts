@@ -1,0 +1,59 @@
+From: Tobias Heider <me@tobhe.de>
+Date: Sun, 30 Apr 2023 01:48:38 +0200
+Subject: Fix update-grub/m1n1. Run as bash, remove non-existing paths,
+ fix path to dtbs.
+
+---
+ update-grub | 7 +------
+ update-m1n1 | 5 +++--
+ 2 files changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/update-grub b/update-grub
+index 65421b7..ceb2939 100755
+--- a/update-grub
++++ b/update-grub
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: MIT
+ 
+ set -e
+@@ -51,15 +51,10 @@ echo "Installing GRUB files..."
+ mkdir -p "$GRUB_DIR"
+ touch "$GRUB_DIR"/device.map
+ dd if=/dev/zero of="$GRUB_DIR"/grubenv bs=1024 count=1 2>/dev/null
+-cp -r /usr/share/grub/themes "$GRUB_DIR"
+ cp -r /usr/lib/grub/arm64-efi "$GRUB_DIR"
+ rm -f "$GRUB_DIR"/arm64-efi/*.module
+ mkdir -p "$GRUB_DIR"/{fonts,locale}
+ cp /usr/share/grub/unicode.pf2 "$GRUB_DIR"/fonts
+-for i in /usr/share/locale/*/LC_MESSAGES/grub.mo; do
+-    lc="$(echo "$i" | cut -d/ -f5)"
+-    cp "$i" "$GRUB_DIR"/locale/"$lc".mo
+-done
+ 
+ [[ $MODULES != *$fs* ]] && MODULES="$MODULES $fs"
+ echo "Core image modules: $MODULES"
+diff --git a/update-m1n1 b/update-m1n1
+index d5d8668..57db71e 100755
+--- a/update-m1n1
++++ b/update-m1n1
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # SPDX-License-Identifier: MIT
+ 
+ set -e
+@@ -11,10 +11,11 @@ else
+     . /usr/share/asahi-scripts/functions.sh
+ fi
+ 
++KPATHS=(/lib/firmware/*/device-tree)
+ : ${M1N1:="/usr/share/m1n1/m1n1.bin"}
+ : ${U_BOOT:="/usr/share/u-boot-asahi/u-boot-nodtb.bin"}
+ : ${TARGET:="$1"}
+-: ${DTBS:=/lib/firmware/*-asahi/device-tree/apple/*.dtb}
++: ${DTBS:="${KPATHS[-1]}/apple/*.dtb"}
+ : ${CONFIG:=/etc/m1n1.conf}
+ 
+ umount=false

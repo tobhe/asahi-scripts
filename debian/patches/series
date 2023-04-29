@@ -7,3 +7,4 @@ ubuntu-kernel-hook.patch
 0008-Wait-a-bit-to-fix-bug-where-grub-probe-finds-the-old.patch
 0008-Add-initramfs-tools-implementation-for-cpio-firmware.patch
 0009-Remove-bashism.patch
+0010-Fix-update-grub-m1n1.-Run-as-bash-remove-non-existin.patch
