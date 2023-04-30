@@ -6,7 +6,7 @@ Subject: Add initramfs-tools implementation for cpio firmware loading
 - Add install-initramfs make target
 - busybox mount doesn't support PARTUUID= so use /dev/disk/by-partuuid
 ---
- Makefile                            | 19 ++++++++----
+ Makefile                            | 20 ++++++++----
  functions.sh                        |  4 +--
  initramfs/hooks/asahi               | 26 ++++++++++++++++
  initramfs/kernel/zz-update-m1n1     | 21 +++++++++++++
@@ -14,7 +14,7 @@ Subject: Add initramfs-tools implementation for cpio firmware loading
  initramfs/scripts/init-bottom/asahi | 19 ++++++++++++
  initramfs/scripts/init-top/asahi    | 61 +++++++++++++++++++++++++++++++++++++
  zz-update-m1n1                      | 21 -------------
- 8 files changed, 175 insertions(+), 29 deletions(-)
+ 8 files changed, 176 insertions(+), 29 deletions(-)
  create mode 100644 initramfs/hooks/asahi
  create mode 100644 initramfs/kernel/zz-update-m1n1
  create mode 100644 initramfs/modules
@@ -23,10 +23,10 @@ Subject: Add initramfs-tools implementation for cpio firmware loading
  delete mode 100644 zz-update-m1n1
 
 diff --git a/Makefile b/Makefile
-index 75d727d..3e9f500 100644
+index 75d727d..623d492 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -44,16 +44,23 @@ install-dracut: install
+@@ -44,16 +44,24 @@ install-dracut: install
  	install -m0755 -t $(DESTDIR)$(DRACUT_MODULES_DIR)/99asahi-firmware dracut/modules.d/99asahi-firmware/load-asahi-firmware.sh
  	install -m0755 -t $(DESTDIR)$(DRACUT_MODULES_DIR)/99asahi-firmware dracut/modules.d/99asahi-firmware/module-setup.sh
  
@@ -41,6 +41,7 @@ index 75d727d..3e9f500 100644
 +	install -m0755 -t $(DESTDIR)/etc/initramfs-tools/scripts/init-top initramfs/scripts/init-top/asahi
 +	install -d $(DESTDIR)/etc/initramfs-tools/scripts/init-bottom
 +	install -m0755 -t $(DESTDIR)/etc/initramfs-tools/scripts/init-bottom initramfs/scripts/init-bottom/asahi
++	install -m0644 -t $(DESTDIR)$(PREFIX)/share/asahi-scripts initramfs/modules
 +
  install-boot:
  	install -m0755 -t $(DESTDIR)$(BIN_DIR)/ $(BUILD_BOOT_SCRIPTS)
@@ -55,7 +56,7 @@ index 75d727d..3e9f500 100644
  	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants
  	ln -sf $(addprefix $(PREFIX)/lib/systemd/system/,$(MULTI_USER_WANTS)) \
  		$(DESTDIR)$(PREFIX)/lib/systemd/system/multi-user.target.wants/
-@@ -64,7 +71,7 @@ install-arch: install install-mkinitcpio install-boot
+@@ -64,7 +72,7 @@ install-arch: install install-mkinitcpio install-boot
  
  install-fedora: install install-dracut
  

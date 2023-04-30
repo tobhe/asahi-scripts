@@ -7,10 +7,10 @@ Subject: Remove bashism
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 3e9f500..2994a0b 100644
+index 623d492..76737e4 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -59,7 +59,8 @@ install-initramfs: install
+@@ -60,7 +60,8 @@ install-initramfs: install
  install-boot:
  	install -m0755 -t $(DESTDIR)$(BIN_DIR)/ $(BUILD_BOOT_SCRIPTS)
  	install -dD $(DESTDIR)$(PREFIX)/lib/systemd/system
