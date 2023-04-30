@@ -1,3 +1,10 @@
+asahi-scripts (20221220-5) kinetic; urgency=medium
+
+  * Install initramfs/modules in install-initramfs
+  * Update initramfs on update
+
+ -- Tobias Heider <me@tobhe.de>  Sun, 30 Apr 2023 02:21:33 +0200
+
 asahi-scripts (20221220-4) kinetic; urgency=medium
 
   * Fix update-grub. Run as bash, remove non-existing paths.
