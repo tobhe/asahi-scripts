@@ -1,15 +1,18 @@
 From: Tobias Heider <me@tobhe.de>
 Date: Sun, 30 Apr 2023 01:48:38 +0200
-Subject: Fix update-grub/m1n1. Run as bash, remove non-existing paths,
- fix path to dtbs.
+Subject: Fix update-grub/m1n1.
 
+- Run as bash
+- generate grub env with grub-editenv
+- remove non-existing paths
+- fix path to dtbs.
 ---
- update-grub | 7 +------
+ update-grub | 9 ++-------
  update-m1n1 | 5 +++--
- 2 files changed, 4 insertions(+), 8 deletions(-)
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/update-grub b/update-grub
-index 65421b7..ceb2939 100755
+index 65421b7..dad7b6f 100755
 --- a/update-grub
 +++ b/update-grub
 @@ -1,4 +1,4 @@
@@ -18,11 +21,13 @@ index 65421b7..ceb2939 100755
  # SPDX-License-Identifier: MIT
  
  set -e
-@@ -51,15 +51,10 @@ echo "Installing GRUB files..."
+@@ -50,16 +50,11 @@ EOF
+ echo "Installing GRUB files..."
  mkdir -p "$GRUB_DIR"
  touch "$GRUB_DIR"/device.map
- dd if=/dev/zero of="$GRUB_DIR"/grubenv bs=1024 count=1 2>/dev/null
+-dd if=/dev/zero of="$GRUB_DIR"/grubenv bs=1024 count=1 2>/dev/null
 -cp -r /usr/share/grub/themes "$GRUB_DIR"
++grub-editenv "$GRUB_DIR"/grubenv create
  cp -r /usr/lib/grub/arm64-efi "$GRUB_DIR"
  rm -f "$GRUB_DIR"/arm64-efi/*.module
  mkdir -p "$GRUB_DIR"/{fonts,locale}
