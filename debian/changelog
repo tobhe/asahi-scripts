@@ -1,3 +1,9 @@
+asahi-scripts (20221220-6) kinetic; urgency=medium
+
+  * Create initial grub env with grub-editenv
+
+ -- Tobias Heider <me@tobhe.de>  Wed, 10 May 2023 21:11:03 +0200
+
 asahi-scripts (20221220-5) kinetic; urgency=medium
 
   * Install initramfs/modules in install-initramfs
