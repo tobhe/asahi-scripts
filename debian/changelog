@@ -1,3 +1,9 @@
+asahi-scripts (20221220-7) kinetic; urgency=medium
+
+  * Sync initramfs scripts with initcpio
+
+ -- Tobias Heider <me@tobhe.de>  Mon, 15 May 2023 15:57:13 +0200
+
 asahi-scripts (20221220-6) kinetic; urgency=medium
 
   * Create initial grub env with grub-editenv
