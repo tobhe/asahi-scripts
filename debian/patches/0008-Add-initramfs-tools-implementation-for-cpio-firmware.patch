@@ -11,10 +11,10 @@ Subject: Add initramfs-tools implementation for cpio firmware loading
  initramfs/hooks/asahi               | 26 ++++++++++++++++
  initramfs/kernel/zz-update-m1n1     | 21 +++++++++++++
  initramfs/modules                   | 33 ++++++++++++++++++++
- initramfs/scripts/init-bottom/asahi | 19 ++++++++++++
+ initramfs/scripts/init-bottom/asahi | 20 ++++++++++++
  initramfs/scripts/init-top/asahi    | 61 +++++++++++++++++++++++++++++++++++++
  zz-update-m1n1                      | 21 -------------
- 8 files changed, 176 insertions(+), 29 deletions(-)
+ 8 files changed, 177 insertions(+), 29 deletions(-)
  create mode 100644 initramfs/hooks/asahi
  create mode 100644 initramfs/kernel/zz-update-m1n1
  create mode 100644 initramfs/modules
@@ -187,10 +187,10 @@ index 0000000..19ac8ae
 +apple-rtkit-helper
 diff --git a/initramfs/scripts/init-bottom/asahi b/initramfs/scripts/init-bottom/asahi
 new file mode 100644
-index 0000000..66d5e50
+index 0000000..33a8752
 --- /dev/null
 +++ b/initramfs/scripts/init-bottom/asahi
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,20 @@
 +#!/usr/bin/sh
 +
 +PREREQ=""
@@ -208,11 +208,12 @@ index 0000000..66d5e50
 +
 +. /scripts/functions
 +
-+mount -t tmpfs vendorfw "${rootmnt}/lib/firmware/vendor"
-+cp -r /lib/firmware/vendor/* /lib/firmware/vendor/.vendorfw.manifest "${rootmnt}/lib/firmware/vendor"
++mkdir -p "${rootmnt}"/lib/firmware/vendor
++mount -t tmpfs vendorfw "${rootmnt}"/lib/firmware/vendor
++cp -r /vendorfw/* /vendorfw/.vendorfw.manifest "${rootmnt}"/lib/firmware/vendor
 diff --git a/initramfs/scripts/init-top/asahi b/initramfs/scripts/init-top/asahi
 new file mode 100644
-index 0000000..db2ae06
+index 0000000..abf77b1
 --- /dev/null
 +++ b/initramfs/scripts/init-top/asahi
 @@ -0,0 +1,61 @@
@@ -273,7 +274,7 @@ index 0000000..db2ae06
 +fi
 +
 +
-+( cd /lib/firmware; cpio -i < "$VENDORFW/firmware.cpio"; mv vendorfw vendor )
++( cd /; cpio -i < "$VENDORFW/firmware.cpio" )
 +umount /run/.system-efi
 +
 +log_success_msg "Asahi: Vendor firmware unpacked successfully"
